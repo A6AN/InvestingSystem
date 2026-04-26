@@ -1,0 +1,52 @@
+# phase2_config.yaml
+# ------------------
+# Phase 2 overrides. Extends phase1_config.yaml values.
+
+# Position Sizing (Phase 2 — dynamic)
+use_dynamic_sizing: true
+base_size: 0.05
+
+# Regime multipliers (Section 10 of plan)
+regime_multipliers:
+  trending_up:   1.0
+  trending_down: 1.0
+  breakout:      0.8
+  choppy:        0.6
+  volatile:      0.3
+
+# HMM configuration
+hmm_n_components:    5
+hmm_covariance_type: "full"
+hmm_n_iter:          200
+hmm_tol:             0.0001
+hmm_train_years:     10      # query_date - 10y → query_date - 1y
+hmm_val_years:       1       # query_date - 1y  → query_date
+hmm_fallback:        "equal_weights"
+
+# Walk-forward windows
+train_years: 10
+val_years:   1
+
+# Graham's Margin of Safety rules
+min_win_rate:         0.52    # veto if historical win rate below this
+min_expectancy:       0.003   # veto if avg % PnL per trade below this (0.3%)
+max_symbol_drawdown:  0.25    # veto if historical max drawdown above 25%
+thin_edge_threshold:  0.008   # half-size if expectancy below this but above min
+thin_edge_multiplier: 0.5
+
+# Fundamental screen (soft filter — adjusts risk_score, does not veto)
+pe_risk_threshold:   60.0
+pe_risk_score_bump:  0.15
+
+# Phase 1 values carried forward
+capital:                  1_000_000
+max_positions:            5
+max_position_pct:         0.05
+max_exposure_pct:         0.30
+buy_threshold:            0.5
+sell_threshold:           -0.5
+risk_veto_threshold:      0.8
+vix_halt_threshold:       25.0
+drawdown_circuit_breaker: 0.15
+stop_loss_atr_multiplier: 2.0
+log_dir:                  "logs"

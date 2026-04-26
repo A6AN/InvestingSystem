@@ -1,0 +1,95 @@
+# phase3_config.yaml
+# ------------------
+# Phase 3: Machine Learning specialist models.
+# All Phase 2 values carried forward.
+
+# Model save directory
+model_save_dir: "system/models/saved"
+
+# Training defaults
+train_start:    "2021-01-01"   # default start for tabular model training
+train_end:      "2024-12-31"   # default end (leave 2025+ for OOS testing)
+test_size:      0.2            # 20% held out for evaluation (temporal split)
+
+# Default symbols for training (Nifty 50 large caps — good liquidity)
+default_symbols:
+  - "RELIANCE.NS"
+  - "TCS.NS"
+  - "INFY.NS"
+  - "HDFCBANK.NS"
+  - "ICICIBANK.NS"
+  - "KOTAKBANK.NS"
+  - "HINDUNILVR.NS"
+  - "WIPRO.NS"
+  - "AXISBANK.NS"
+
+# XGBoost (Trend, Mean Reversal)
+xgb_n_estimators:  100
+xgb_max_depth:     4
+xgb_learning_rate: 0.1
+xgb_eval_metric:   "logloss"
+
+# Random Forest (Momentum, Volume)
+rf_n_estimators: 100
+rf_max_depth:    5
+rf_random_state: 42
+
+# Isolation Forest (Volatility — unsupervised)
+iso_n_estimators:    100
+iso_contamination:   0.05     # expected fraction of anomalous volatility days
+iso_random_state:    42
+
+# LightGBM (Mean Reversal alternative)
+lgbm_n_estimators:  100
+lgbm_learning_rate: 0.05
+lgbm_max_depth:     4
+
+# Confidence calibration (applied post-training)
+# "platt"     → Platt scaling (LogisticRegression on probabilities)
+# "isotonic"  → Isotonic regression
+# "none"      → Use raw model probabilities
+calibration_method: "platt"
+
+# Phase 2 values carried forward
+use_dynamic_sizing:       true
+base_size:                0.05
+capital:                  1_000_000
+max_positions:            5
+max_position_pct:         0.05
+max_exposure_pct:         0.30
+buy_threshold:            0.5
+sell_threshold:           -0.5
+risk_veto_threshold:      0.8
+vix_halt_threshold:       25.0
+drawdown_circuit_breaker: 0.15
+stop_loss_atr_multiplier: 2.0
+log_dir:                  "logs"
+
+# Graham (Phase 2)
+min_win_rate:         0.52
+min_expectancy:       0.003
+max_symbol_drawdown:  0.25
+thin_edge_threshold:  0.008
+thin_edge_multiplier: 0.5
+
+# P/E filter (Phase 2)
+pe_risk_threshold:   60.0
+pe_risk_score_bump:  0.15
+
+# Regime multipliers (Phase 2)
+regime_multipliers:
+  trending_up:   1.0
+  trending_down: 1.0
+  breakout:      0.8
+  choppy:        0.6
+  volatile:      0.3
+
+# HMM (Phase 2)
+hmm_n_components:    5
+hmm_covariance_type: "full"
+hmm_n_iter:          200
+hmm_tol:             0.0001
+hmm_train_years:     10
+hmm_val_years:       1
+train_years:         10
+val_years:           1

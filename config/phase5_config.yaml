@@ -1,0 +1,74 @@
+# phase5_config.yaml
+# ------------------
+# Phase 5: Performance-Adaptive Weight Engine
+# Extends phase2_config.yaml values.
+
+# Regime-specific alpha values.
+# Controls how much each regime trusts the live performance data
+# vs. the hand-tuned Phase 4 WEIGHT_MATRIX prior.
+# Higher alpha = more trust in Phase 4 hand-tuning.
+# Lower alpha  = more trust in live specialist performance.
+regime_weight_alpha:
+  trending_up:   0.4   # reasonable data available — blend 60% live
+  trending_down: 0.4
+  choppy:        0.5   # hand-tuning is weaker here — 50/50 blend
+  volatile:      0.7   # hand-tuning is strong — trust it 70%
+  breakout:      0.5   # infrequent regime — balanced blend
+
+# Within the performance_score, how to weight accuracy vs PnL contribution
+accuracy_alpha: 0.4     # rolling_accuracy_20d weight
+pnl_alpha:      0.6     # pnl_contribution_60d weight
+
+# Minimum trades before adaptation activates (fallback to Phase 4 below this)
+min_trades_for_adaptation: 30
+
+# Rolling windows
+rolling_accuracy_window:   20    # bars (trading days)
+pnl_contribution_window:   60    # calendar days
+
+# Output path for computed live weights
+live_weights_path: "config/live_weights.json"
+
+# Phase 2 values carried forward
+use_dynamic_sizing:       true
+base_size:                0.05
+capital:                  1_000_000
+max_positions:            5
+max_position_pct:         0.05
+max_exposure_pct:         0.30
+buy_threshold:            0.5
+sell_threshold:           -0.5
+risk_veto_threshold:      0.8
+vix_halt_threshold:       25.0
+drawdown_circuit_breaker: 0.15
+stop_loss_atr_multiplier: 2.0
+log_dir:                  "logs"
+
+# Graham's Margin of Safety (from Phase 2)
+min_win_rate:         0.52
+min_expectancy:       0.003
+max_symbol_drawdown:  0.25
+thin_edge_threshold:  0.008
+thin_edge_multiplier: 0.5
+
+# P/E soft filter (from Phase 2)
+pe_risk_threshold:   60.0
+pe_risk_score_bump:  0.15
+
+# Regime multipliers (from Phase 2)
+regime_multipliers:
+  trending_up:   1.0
+  trending_down: 1.0
+  breakout:      0.8
+  choppy:        0.6
+  volatile:      0.3
+
+# HMM (from Phase 2)
+hmm_n_components:    5
+hmm_covariance_type: "full"
+hmm_n_iter:          200
+hmm_tol:             0.0001
+hmm_train_years:     10
+hmm_val_years:       1
+train_years:         10
+val_years:           1

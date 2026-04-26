@@ -1,0 +1,26 @@
+# phase1_config.yaml
+# ------------------
+# All tunable constants for Phase 1.
+# Changes here affect the entire pipeline — no hardcoded values elsewhere.
+
+# Capital & Position Sizing
+capital:                  1000000     # Starting portfolio value (INR)
+max_positions:            5           # Max simultaneous open positions
+max_position_pct:         0.05        # Max % of portfolio per trade
+max_exposure_pct:         0.30        # Max total open exposure
+
+# Signal Thresholds
+buy_threshold:            0.5         # Aggregator score >= this → BUY
+sell_threshold:           -0.5        # Aggregator score <= this → SELL
+
+# Risk Veto Rules
+risk_veto_threshold:      0.8         # Aadya risk_score above this → HOLD
+vix_halt_threshold:       25.0        # India VIX above this → halt all BUYs
+drawdown_circuit_breaker: 0.15        # Portfolio drawdown above this → halt everything
+
+# Execution
+stop_loss_atr_multiplier: 2.0         # Stop = entry - N * ATR(14)
+commission_pct:           0.001       # 0.1% per side (Backtrader)
+
+# Logging
+log_dir:                  "logs"      # Output directory for JSONL logs
