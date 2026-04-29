@@ -128,7 +128,7 @@ def _phase1_signal(data: Dict[str, Any]) -> SignalContract:
         confidence  = round(float(np.clip(conf, 0, 1)), 4),
         strength    = round(float(np.clip(1.0 - risk, 0, 1)), 4),
         risk_score  = round(float(np.clip(risk, 0, 1)), 4),
-        metadata    = {"source": "phase1_fallback", "vix": vix, "ATR": data.get("ATR", 0.0)},
+        metadata    = {"source": "phase1_fallback", "vix": vix},
     )
 
 
@@ -262,7 +262,6 @@ class VolatilitySpecialist(BaseSpecialist):
             metadata    = {
                 "source":        "ml+phase1",
                 "vix":           vix,
-                "ATR":           data.get("ATR", 0.0),
                 "ml_signal":     ml_signal,
                 "ml_risk":       round(ml_risk, 4),
             },
