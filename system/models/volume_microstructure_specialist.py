@@ -15,55 +15,7 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
-# ──────────────────────────────────────────────
-# Base contracts (copied per shared rules)
-# ──────────────────────────────────────────────
-
-@dataclass
-class SignalContract:
-    specialist: str
-    timestamp: str
-    symbol: str
-    signal: int           # -1 = SELL, 0 = HOLD, 1 = BUY
-    confidence: float     # 0.0–1.0
-    strength: float       # 0.0–1.0
-    risk_score: float     # 0.0–1.0
-    regime_fit: float = 0.0        # DO NOT SET — injected by aggregator
-    expected_return: float = 0.0   # Phase 5+, leave 0.0
-    uncertainty: float = 0.0       # Phase 5+, leave 0.0
-    metadata: dict = field(default_factory=dict)
-
-
-class BaseSpecialist(ABC):
-    @property
-    @abstractmethod
-    def name(self) -> str: pass
-
-    @abstractmethod
-    def compute_features(self, data: dict) -> dict: pass
-
-    @abstractmethod
-    def generate_signal(self, features: dict) -> SignalContract: pass
-
-    def safe_generate(self, data: dict) -> SignalContract:
-        try:
-            features = self.compute_features(data)
-            contract = self.generate_signal(features)
-            self._validate(contract)
-            return contract
-        except Exception as e:
-            return SignalContract(
-                specialist=self.name, timestamp=data.get("timestamp", ""),
-                symbol=data.get("symbol", ""), signal=0,
-                confidence=0.0, strength=0.0, risk_score=0.5,
-                metadata={"error": str(e), "fallback": True}
-            )
-
-    def _validate(self, c):
-        assert c.signal in (-1, 0, 1)
-        assert 0.0 <= c.confidence <= 1.0
-        assert 0.0 <= c.strength <= 1.0
-        assert 0.0 <= c.risk_score <= 1.0
+from system.models.base_specialist import BaseSpecialist, SignalContract
 
 
 # ──────────────────────────────────────────────

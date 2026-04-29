@@ -124,6 +124,8 @@ def _phase1_signal(data: Dict[str, Any]) -> SignalContract:
 
     return SignalContract(
         specialist  = "volatility",
+        timestamp   = data.get("timestamp", ""),
+        symbol      = data.get("symbol", ""),
         signal      = signal,
         confidence  = round(float(np.clip(conf, 0, 1)), 4),
         strength    = round(float(np.clip(1.0 - risk, 0, 1)), 4),
@@ -182,6 +184,9 @@ class VolatilitySpecialist(BaseSpecialist):
         except Exception as exc:  # noqa: BLE001
             print(f"[VolatilitySpecialist] Could not load model: {exc} — using Phase 1 fallback.")
             return False
+
+    def compute_features(self, data: dict) -> dict:
+        return data
 
     # ── feature extraction ────────────────────────────────────
     @staticmethod
@@ -255,6 +260,8 @@ class VolatilitySpecialist(BaseSpecialist):
         # ── clip & return ─────────────────────────────────────
         return SignalContract(
             specialist  = self.name,
+            timestamp   = data.get("timestamp", ""),
+            symbol      = data.get("symbol", ""),
             signal      = int(signal),
             confidence  = round(float(np.clip(confidence, 0, 1)), 4),
             strength    = round(float(np.clip(1.0 - risk_score, 0, 1)), 4),
