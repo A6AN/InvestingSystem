@@ -1,1 +1,11 @@
-graphify
+numpy
+pandas
+yfinance
+backtrader
+pandas_ta
+hmmlearn
+scikit-learn
+xgboost
+pyyaml
+joblib
+lightgbm

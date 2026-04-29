@@ -253,13 +253,13 @@ Source: `graphify-out/GRAPH_REPORT.md` (run 2026-04-26)
 - [x] Drawdown circuit breaker (15%)
 - [x] Max 5 open positions
 
-### ⚠️ Phase 3 — Machine Learning (NOT STARTED)
-- [ ] Real Trend specialist (Prapti): XGBoost on trend features
-- [ ] Real Momentum specialist (Gayatri): Random Forest
+### ⚠️ Phase 3 — Machine Learning (IN PROGRESS)
+- [x] Real Trend specialist (Prapti): XGBoost on trend features
+- [x] Real Momentum specialist (Gayatri): Random Forest
 - [ ] Real Volatility specialist (Aadya): Isolation Forest
 - [ ] Real Mean Reversal specialist (Satakshi): XGBoost/LightGBM
-- [ ] Real Volume specialist (Simar): RF/XGBoost ensemble
-- [ ] Real Sentiment specialist (Pavani): DistilRoBERTa + XGBoost (separate track — NLP)
+- [x] Real Volume specialist (Simar): RF/XGBoost ensemble
+- [x] Real Sentiment specialist (Pavani): DistilRoBERTa + XGBoost (separate track — NLP)
 - [ ] Training pipeline run end-to-end on real data
 - [ ] Model persistence: saved to `system/models/saved/`
 - [ ] `system/models/<name>_specialist.py` files wired into inference.py and main.py
@@ -274,14 +274,14 @@ Source: `graphify-out/GRAPH_REPORT.md` (run 2026-04-26)
 - [x] Walk-forward inference CLI (`inference.py`)
 - [x] Live portfolio ledger strategy
 
-### ❌ Phase 5 — Performance-Adaptive (NOT STARTED)
-- [ ] `evaluation/attribution.py` — per-specialist PnL analysis
-- [ ] Rolling accuracy tracking per specialist (20-day window)
-- [ ] PnL contribution tracking per specialist (60-day window)
-- [ ] Adaptive weight engine: `f(regime_weight, rolling_accuracy_20d, pnl_contribution_60d)`
-- [ ] `expected_return` + `uncertainty` added to SignalContract
-- [ ] Weekly weight update pipeline
-- [ ] Automatic retraining triggers
+### ✅ Phase 5 — Performance-Adaptive (COMPLETE)
+- [x] `evaluation/attribution.py` — per-specialist PnL analysis
+- [x] Rolling accuracy tracking per specialist (20-day window)
+- [x] PnL contribution tracking per specialist (60-day window)
+- [x] Adaptive weight engine: `f(regime_weight, rolling_accuracy_20d, pnl_contribution_60d)`
+- [x] `expected_return` + `uncertainty` added to SignalContract
+- [x] Weekly weight update pipeline
+- [ ] Automatic retraining triggers (Deferred to Phase 6)
 
 ### ❌ Phase 6 — Advanced Architectures (NOT STARTED)
 - [ ] TFT for Prapti (trend temporal attention)

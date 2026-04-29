@@ -50,7 +50,7 @@ class MainStrategy(bt.Strategy):
     def next(self):
         for data in self.datas:
             symbol = data._name
-            date_str = self.data.datetime.date(0).strftime("%Y-%m-%d")
+            date_str = data.datetime.date(0).strftime("%Y-%m-%d")
 
             # Build portfolio state for risk engine
             portfolio_state = self._get_portfolio_state()

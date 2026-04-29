@@ -4,7 +4,7 @@
 
 # Position Sizing (Phase 2 — dynamic)
 use_dynamic_sizing: true
-base_size: 0.05
+base_size: 0.20
 
 # Regime multipliers (Section 10 of plan)
 regime_multipliers:
@@ -41,8 +41,8 @@ pe_risk_score_bump:  0.15
 # Phase 1 values carried forward
 capital:                  1_000_000
 max_positions:            5
-max_position_pct:         0.05
-max_exposure_pct:         0.30
+max_position_pct:         0.20
+max_exposure_pct:         1.00
 buy_threshold:            0.5
 sell_threshold:           -0.5
 risk_veto_threshold:      0.8

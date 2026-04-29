@@ -81,7 +81,7 @@ class Pipeline:
         date: Optional[str] = None,
         ohlcv=None,             # pre-fetched df, optional
         india_vix_series=None,  # pre-fetched series, optional
-        is_validation: bool = False,
+        skip_risk_checks_for_validation: bool = False,
         validation_report=None,
     ) -> PipelineResult:
         """
@@ -103,6 +103,8 @@ class Pipeline:
             india_vix = float(features.get("India_VIX_level", 15.0))
 
             # 2. Regime detection (runs before aggregator)
+            if ohlcv is not None:
+                self.regime_detector.backtest_detect(features)
             regime = self.regime_detector.detect(features)
             # Phase 4/5: use full probability distribution for blending
             regime_probs = self.regime_detector.get_regime_probs()
@@ -127,7 +129,7 @@ class Pipeline:
 
             portfolio_state = self.portfolio_state_fn()
             
-            if is_validation:
+            if skip_risk_checks_for_validation:
                 from system.risk_engine import RiskDecision
                 risk_decision = RiskDecision(
                     allow_trade=True,
@@ -138,8 +140,10 @@ class Pipeline:
             else:
                 risk_decision = self.risk_engine.evaluate(
                     aggregator_decision=agg_result.decision,
+                    aggregator_result=agg_result,
                     volatility_contract=vol_contract_dict,
                     portfolio_state=portfolio_state,
+                    regime=regime,
                     validation_report=validation_report,
                 )
 

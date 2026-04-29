@@ -270,6 +270,42 @@ class RegimeDetector:
         except Exception as e:
             return self._fallback(str(e))
 
+    def backtest_detect(self, features: dict) -> RegimeResult:
+        """
+        Fast proxy detection for backtesting to avoid HMM re-fitting every bar.
+        Uses explicit rules mapped to feature outputs.
+        """
+        vix = features.get("India_VIX_level", 15.0)
+        adx = features.get("ADX", 20.0)
+        
+        ohlcv = features.get("ohlcv")
+        close_price = ohlcv.iloc[-1]["close"] if ohlcv is not None and not ohlcv.empty else 100
+        sma_200 = features.get("sma_200", close_price)
+
+        if vix > 20:
+            regime = "volatile"
+        elif adx > 25 and close_price > sma_200:
+            regime = "trending_up"
+        elif adx > 25 and close_price < sma_200:
+            regime = "trending_down"
+        elif adx > 15:
+            regime = "breakout"
+        else:
+            regime = "choppy"
+            
+        probs = {s: 0.0 for s in WEIGHT_MATRIX.keys()}
+        probs[regime] = 1.0
+        
+        result = RegimeResult(
+            regime=regime,
+            weights=WEIGHT_MATRIX[regime],
+            regime_probs=probs,
+            hmm_active=False,
+            metadata={"proxy": True, "vix": vix, "adx": adx}
+        )
+        self._cached_result = result
+        return result
+
     # ------------------------------------------------------------------
     # State labeling
     # ------------------------------------------------------------------

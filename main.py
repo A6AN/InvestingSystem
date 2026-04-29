@@ -17,7 +17,12 @@ import yaml
 from pathlib import Path
 
 from evaluation.backtest_runner import run_backtest
-from system.models.stub_specialists import build_stub_specialists
+from system.models.sentiment_specialist import SentimentSpecialist
+from system.models.trend_specialist import TrendSpecialist
+from system.models.momentum_specialist import MomentumSpecialist
+from system.models.volatility_specialist import VolatilitySpecialist
+from system.models.mean_reversal_specialist import MeanReversalSpecialist
+from system.models.volume_microstructure_specialist import VolumeMicrostructureSpecialist
 
 
 def load_config(path: str = "config/phase2_config.yaml") -> dict:
@@ -49,8 +54,15 @@ def main():
     args = parse_args()
     config = load_config(args.config)
 
-    # Build stub specialists — swap for real team files as they arrive
-    specialists = build_stub_specialists()
+    # Build all 6 real specialists — Phase 3 ML models auto-load if trained
+    specialists = [
+        SentimentSpecialist(),      # Pavani
+        TrendSpecialist(),          # Prapti
+        MomentumSpecialist(),       # Gayatri
+        VolatilitySpecialist(),     # Aadya
+        MeanReversalSpecialist(),   # Satakshi
+        VolumeMicrostructureSpecialist(),  # Simar
+    ]
 
     print(f"Loaded {len(specialists)} specialists: {[s.name for s in specialists]}")
 

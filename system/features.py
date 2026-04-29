@@ -65,7 +65,7 @@ def _bb_col(bb_df: "pd.DataFrame", prefix: str) -> str:
 # Data Fetchers
 # ---------------------------------------------------------------------------
 
-def fetch_ohlcv(symbol: str, days: int = HISTORY_DAYS) -> pd.DataFrame:
+def fetch_ohlcv(symbol: str, days: int = HISTORY_DAYS, asof_date: str = None) -> pd.DataFrame:
     """
     Fetch NSE OHLCV daily data via yfinance.
     Symbol format: 'RELIANCE.NS', 'TCS.NS', 'NIFTY50.NS'
@@ -73,7 +73,10 @@ def fetch_ohlcv(symbol: str, days: int = HISTORY_DAYS) -> pd.DataFrame:
     Returns DataFrame with columns: open, high, low, close, volume
     Index: DatetimeIndex (ascending)
     """
-    end = datetime.today()
+    if asof_date:
+        end = pd.to_datetime(asof_date) + timedelta(days=1)
+    else:
+        end = datetime.today()
     start = end - timedelta(days=days)
 
     ticker = yf.Ticker(symbol)
@@ -91,12 +94,15 @@ def fetch_ohlcv(symbol: str, days: int = HISTORY_DAYS) -> pd.DataFrame:
     return df
 
 
-def fetch_india_vix(days: int = HISTORY_DAYS) -> pd.Series:
+def fetch_india_vix(days: int = HISTORY_DAYS, asof_date: str = None) -> pd.Series:
     """
     Fetch India VIX daily data via yfinance (^INDIAVIX).
     Returns Series indexed by date.
     """
-    end = datetime.today()
+    if asof_date:
+        end = pd.to_datetime(asof_date) + timedelta(days=1)
+    else:
+        end = datetime.today()
     start = end - timedelta(days=days)
 
     try:
@@ -195,11 +201,18 @@ class FeatureEngine:
         if date is None:
             date = datetime.today().strftime("%Y-%m-%d")
 
-        # --- Fetch data if not provided ---
+        # --- Slice data to prevent lookahead bias (P1 Fix) ---
+        asof_ts = pd.to_datetime(date)
+        if ohlcv is not None:
+            ohlcv = ohlcv[ohlcv.index <= asof_ts]
+        if india_vix_series is not None:
+            india_vix_series = india_vix_series[india_vix_series.index <= asof_ts]
+
+        # --- Fetch data if not provided (P0 Fix) ---
         if ohlcv is None:
-            ohlcv = fetch_ohlcv(symbol, self.history_days)
+            ohlcv = fetch_ohlcv(symbol, self.history_days, asof_date=date)
         if india_vix_series is None:
-            india_vix_series = fetch_india_vix(self.history_days)
+            india_vix_series = fetch_india_vix(self.history_days, asof_date=date)
         if fii_dii is None:
             fii_dii = fetch_fii_dii(date)
         if delivery_pct is None:
