@@ -80,7 +80,7 @@ VOLUME_FEATURES = [
 ]
 
 
-class VolumeSpecialist(BaseSpecialist):
+class VolumeMicrostructureSpecialist(BaseSpecialist):
 
     def __init__(self):
         self._model_bundle = None
@@ -295,12 +295,12 @@ class VolumeSpecialist(BaseSpecialist):
             try:
                 import joblib
                 self._model_bundle = joblib.load(MODEL_PATH)
-                logger.info("VolumeSpecialist: ML model loaded.")
+                logger.info("VolumeMicrostructureSpecialist: ML model loaded.")
             except Exception as e:
-                logger.warning(f"VolumeSpecialist: Could not load model — {e}. Using rule-based fallback.")
+                logger.warning(f"VolumeMicrostructureSpecialist: Could not load model — {e}. Using rule-based fallback.")
                 self._model_bundle = None
         else:
-            logger.info("VolumeSpecialist: Model file not found. Using Phase 1 rule-based logic.")
+            logger.info("VolumeMicrostructureSpecialist: Model file not found. Using Phase 1 rule-based logic.")
             self._model_bundle = None
         return self._model_bundle
 
