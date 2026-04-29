@@ -144,6 +144,12 @@ def run_backtest(
 
     max_dd = drawdown.get("max", {}).get("drawdown", 0.0)
 
+    open_positions = {}
+    for d in strat.datas:
+        pos = strat.getposition(d)
+        if pos and pos.size != 0:
+            open_positions[d._name] = {"size": pos.size, "avg_price": round(pos.price, 2)}
+
     summary = {
         "total_return_pct":     round(total_return * 100, 2),
         "sharpe_ratio":         round(sharpe, 3) if sharpe else None,
@@ -155,12 +161,21 @@ def run_backtest(
         "avg_loss":             round(avg_loss, 2),
         "start_value":          round(start_value, 2),
         "end_value":            round(end_value, 2),
+        "open_positions":       open_positions,
     }
 
     if verbose:
         print(f"\nResults:")
         for k, v in summary.items():
-            print(f"  {k:<25}: {v}")
+            if k == "open_positions":
+                if not v:
+                    print(f"  {k:<25}: None")
+                else:
+                    print(f"  {k:<25}:")
+                    for sym, pos_data in v.items():
+                        print(f"    - {sym}: {pos_data['size']} shares @ ₹{pos_data['avg_price']}")
+            else:
+                print(f"  {k:<25}: {v}")
         print()
 
     return summary
